@@ -1,0 +1,24 @@
+librerias necesarias:
+- nodemon
+- mysql2
+- cors 
+- express
+- bcryptjs
+
+Base de datos MySql, tabla aprendiz
+
+NOTAS DE DESARROLLADOR: 
+Usamos modulos implementados con COMMONJS
+Paradigma Procedural
+
+creamos los siguientes recursos o endpoint
+
+get: listarTodos
+post: crear
+put : editarPorId
+delete : borrarPorId
+usar express
+
+aplicaciones para probar las aplicaciones
+- postman
+

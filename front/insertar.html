@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+    <div class="container">
+
+        <nav>
+            <div class="nav-wrapper">
+              <a href="#" class="brand-logo">Aprendiz</a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><button class="waves-effect waves-light btn" onclick="listarTodos()" >Listar</button></li>
+                <li><button class="waves-effect waves-light btn" >Insertar</button></li>
+                <li><button class="waves-effect waves-light btn" >Eliminar</button></li>
+              </ul>
+            </div>
+          </nav>
+
+        <div class="row">
+            <div class="col s8">
+
+                <form action="" method="post" enctype="multipart/form-data" id="frmAprendiz">
+                    <div class="input-field col s8">
+                        <input placeholder="Placeholder" id="nombre" class="validate" type="text">
+                        <label for="">Nombre</label>
+                    </div>
+                    <div class="input-field col s8">
+                        <input placeholder="Placeholder" id="apellido" class="validate" type="text">
+                        <label for="">Apellido</label>
+                    </div>
+                    <div class="input-field col s8">
+                        <input placeholder="Placeholder" id="email" class="validate" type="text">
+                        <label for="">Email</label>
+                    </div>
+                    <div class="input-field col s8">
+                        <input placeholder="Placeholder" id="password" class="validate" type="text">
+                        <label for="">Pass</label>
+                    </div>
+                    <div class="input-field col s8">
+                        <button class="btn">Enviar</button>
+                    </div>
+                </form>
+
+            </div>
+
+
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="aprendiz.js"></script>
+</body>
+</html>

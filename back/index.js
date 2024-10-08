@@ -12,7 +12,7 @@ app.use(cors())
 } */
 app.use(express.json()) //serializar los request y response
 
-app.use(require('./src'))
+app.use(require('./src/aprendiz.js'))
 
 app.listen(4100, () =>{
     console.log(`API REST encendida en el puerto 4100`)

@@ -3,12 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>ejemplo de CRUD usando API REST y vanilla JS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
+
+    <div class="container">
+
+        <nav>
+            <div class="nav-wrapper">
+              <a href="#" class="brand-logo">Aprendiz</a>
+              <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><button class="waves-effect waves-light btn" onclick="listarTodos()" >Listar</button></li>
+                <li><button class="waves-effect waves-light btn" >Insertar</button></li>
+                <li><button class="waves-effect waves-light btn" >Eliminar</button></li>
+              </ul>
+            </div>
+          </nav>
+
+        <div class="row">
+            <div class="col s12"></div>
+        </div>
+    </div>
+
     <div id="content">
         
     </div>
-    <script src="app.js"></script>
+
+    <div class="row">
+        <div class="col s8">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody id="contenidoTabla">
+        
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="aprendiz.js"></script>
 </body>
 </html>
+
+  

@@ -1,4 +1,4 @@
-let api = "http://localhost:4100/listartodos"
+let api = "http://localhost:4100/api/aprendiz/listartodos"
 const content = document.getElementById('content')
 fetch(api)
     .then(res=>res.json())

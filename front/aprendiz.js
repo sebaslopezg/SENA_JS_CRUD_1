@@ -40,7 +40,7 @@ function print(data) {
 }
 
 function printTable(data){
-
+    
     data.datos.forEach(aprendiz => {
         console.log(aprendiz.apellido)
         contenidoTabla.innerHTML += `

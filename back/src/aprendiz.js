@@ -3,6 +3,7 @@
 const express = require('express')
 const aprendiz = express() 
 const bd = require('./bd.js')
+const bcrypt = require('bcryptjs')
 
 //rutas para consultar bases de datos
 aprendiz.get("/api/aprendiz/listartodos", (req, res) =>{
@@ -100,7 +101,7 @@ aprendiz.post("/api/aprendiz/crear", (req, res) =>{
         nombre: req.body.nombre,
         apellido: req.body.apellido,
         email: req.body.email,
-        password: req.body.password
+        password: bcrypt.hashSync(req.body.password, 8)
     }
 
     let consulta = 'INSERT INTO aprendiz SET ?'
@@ -152,4 +153,71 @@ aprendiz.put("/api/aprendiz/editarporid/:id", (req, res) =>{
     })
 })
 
+
+//NUEVO CODIGO
+
+
+
+
+
+aprendiz.post("/api/aprendiz/login", (req, res) => {
+    //datos de la peticion (body)
+    let email = req.body.email;
+    let password = req.body.password;
+  
+    //validamos que la data esté completa
+    if (!email || !password) {
+      res.status(400).send({
+        consulta: "error",
+        mensaje: "faltan datos por enviar del formulario ! ",
+      })
+    }else{
+
+        let correo;
+        let pass;
+        let lasname;
+        let name;
+        // buscar en la bd el usuario  y validar
+        bd.query(
+          "SELECT nombre, apellido, email, password FROM aprendiz WHERE email like ?",
+          [email],
+          (error, consulta) => {
+            consulta.forEach((apren) => {
+                //seteamos la variable con el resultado de la consulta
+              pass = apren.password;
+              correo = apren.email;
+              name = apren.name;
+              lasname = apren.lastname;
+            });
+            //validacion 1: email existe
+            if (correo == null) {
+              res.status(400).send({
+                status: "error",
+                mensaje: "Usuario no existe en la BD",
+              });
+            }else{
+                //console.log(password);
+                //console.log(pass);
+                let pwd = bcrypt.compareSync(password, pass);
+                console.log(pwd);
+                if (!pwd) {
+                res.status(400).send({
+                    status: "error",
+                    mensaje: "Pwd Incorrecto !",
+                });
+                } else {
+                res.status(200).send({
+                    consulta: "ok",
+                    mensaje: "Ingreso exitoso al sistema!",
+                    user: name + " " + lasname,
+                    email: email,
+                });
+                }
+            }
+    
+          }
+        );
+    }
+  });
+  
 module.exports = aprendiz

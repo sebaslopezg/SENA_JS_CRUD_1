@@ -19,6 +19,7 @@ let api = "http://localhost:4100/api/aprendiz/";
 let accion = ""
 
 //metodo para listar todos los registros
+//agregr paginacion limite pagina al enlace para listar por paginacion
 function listartodos(){
   fetch(api+'listartodos')
   .then((res) => res.json())

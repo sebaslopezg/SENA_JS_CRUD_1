@@ -4,9 +4,26 @@ const express = require('express')
 const aprendiz = express() 
 const bd = require('./bd.js')
 const bcrypt = require('bcryptjs')
+const multer = require('multer')
+const path = require('path')
+//const {error} = requre('console')
+const fs = require('fs')
+
+//configuracion del almacenamiento multer
+//seteo del storage del multer
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './uploads/images')
+    },
+    filename: function (req, file, cb) {
+      cb(null, "img-"+Date.now() + "_" + file.originalname)
+    }
+  })
+  //instanciamos el storage
+  const upload = multer({ storage: storage })
 
 //rutas para consultar bases de datos
-aprendiz.get("/api/aprendiz/listartodos", (req, res) =>{
+/* aprendiz.get("/api/aprendiz/listartodos", (req, res) =>{
     let consulta = "SELECT * FROM aprendiz order by apellido asc"
     bd.query(consulta, (error, data) =>{
         if (!error) {
@@ -22,6 +39,36 @@ aprendiz.get("/api/aprendiz/listartodos", (req, res) =>{
                 error: error
             })
         }
+    })
+}) */
+
+aprendiz.get("/api/aprendiz/listartodos", (req, res) =>{
+    let limite = parseInt(req.query.limite) 
+    let pagina = parseInt(req.query.pagina)
+    let offset = (pagina - 1) * limite
+
+    let consulta1 = 'SELECT COUNT(*) AS totalaprendices FROM aprendiz'
+    let consulta2 = 'SELECT * FROM aprendiz LIMIT ? OFFSET ?'
+
+    bd.query(consulta1, (error, totalaprendices) =>{
+        bd.query(consulta2, [limite, offset], (error, aprendiz) =>{
+            console.log(typeof limite)
+            res.send({
+                totalaprendiz:totalaprendices,
+                data:aprendiz
+            })
+        })
+    })
+})
+
+//paginacion
+aprendiz.get("/api/aprendiz/consulta/?", (req, res) =>{
+    let parametro = req.params //usa la sintaxis de parametro/:nombreParametro
+    let query = req.query //sintaxis url /?nombrevariable=valor&nombrevariable=valor...
+
+    res.send({
+        parametros: parametro,
+        querys: query
     })
 })
 
@@ -153,12 +200,50 @@ aprendiz.put("/api/aprendiz/editarporid/:id", (req, res) =>{
     })
 })
 
-
-//NUEVO CODIGO
-
-
-
-
+//Agregar editar en imagenes
+aprendiz.put("/api/aprendiz/subirimagen/:id",
+    [upload.single("foto")],
+    (req, res) => {
+        //validar que llegue el archivo wn
+        if (!req.file) {
+            res.status(404).send({
+                status:false,
+                msg: "Debe seleccionar un archivo valido"
+            })
+        }
+    
+        let archivo = req.file.originalname
+        let archivoSplit = archivo.split(".")
+        let extension = archivoSplit[1]
+    
+        //bd.query("SELECT id FROM aprendiz WHERE")
+    
+        if (extension != "png" && extension != "jpg"  && extension != "jpeg" && extension != "webp") {
+            fs.unlink(req.file.path, (error) =>{
+                res.status(404).send({
+                    status:false,
+                    msg:"formato de imagen invalido!"
+                })
+            })
+        }
+    
+        let id = req.params.id
+        let foto = req.file.filename
+        bd.query("UPDATE aprendiz SET foto= ? WHERE id = ?", [foto, id], (error, data)=>{
+            if (error) {
+                res.status(404).send({
+                    status:false,
+                    msg:"Hay un error en la consulta"
+                })
+            }else{
+                res.status(200).send({
+                    status:true,
+                    msg:"Imagen actualizada exitosamente",
+                    data:data
+                })
+            }
+        })
+    })
 
 aprendiz.post("/api/aprendiz/login", (req, res) => {
     //datos de la peticion (body)
@@ -219,5 +304,80 @@ aprendiz.post("/api/aprendiz/login", (req, res) => {
         );
     }
   });
+
+
+//NUEVO CODIGO
+
+//devolver a la imagen de la api
+aprendiz.get("/api/aprendiz/getimagen/:foto", (req, res) =>{
+    //obtener el parametro de la imagen
+    let foto = req.params.foto
+
+    //validamos la solicitud
+
+    if (!foto) {
+        req.status(404).send({
+            status:false,
+            msg:"debe ingresar un archivo"
+        })
+    }else{
+        res.send({
+            ruta:"http://localhost/4100:/uploads/images/"+foto
+        })
+    }
+})
   
 module.exports = aprendiz
+
+
+/* 
+codigo comentariado
+
+
+
+
+aprendiz.put("/api/aprendiz/subirimagen/:id",
+[upload.single("foto")],
+(req, res) => {
+    //validar que llegue el archivo wn
+    if (!req.file) {
+        res.status(404).send({
+            status:false,
+            msg: "Debe seleccionar un archivo valido"
+        })
+    }
+
+    let archivo = req.file.originalname
+    let archivoSplit = archivo.split(".")
+    let extension = archivoSplit[1]
+
+    //bd.query("SELECT id FROM aprendiz WHERE")
+
+    if (extension != "png" && extension != "jpg"  && extension != "jpeg" && extension != "webp") {
+        fs.unlink(req.file.path, (error) =>{
+            res.status(404).send({
+                status:false,
+                msg:"formato de imagen invalido!"
+            })
+        })
+    }
+
+    let id = req.params.id
+    let foto = req.file.filename
+    bd.query("UPDATE aprendiz SET foto= ? WHERE id = ?", [foto, id], (error, data)=>{
+        if (error) {
+            res.status(404).send({
+                status:false,
+                msg:"Hay un error en la consulta"
+            })
+        }else{
+            res.status(200).send({
+                status:true,
+                msg:"Imagen actualizada exitosamente",
+                data:data
+            })
+        }
+    })
+})
+
+*/
